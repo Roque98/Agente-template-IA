@@ -1,0 +1,1139 @@
+{
+	"info": {
+		"_postman_id": "b8c4d8a2-7b4c-4d9e-9e3a-8f5d2e4c7b1a",
+		"name": "Agent System API",
+		"description": "Complete API collection for the Agent System - Sistema de Agentes Configurable\n\nThis collection includes all endpoints for:\n- Authentication (JWT & API Keys)\n- Agent Management\n- Tool Management\n- Prompt Templates\n- Metrics and Cost tracking\n- System Configuration\n\nEnvironment Variables needed:\n- base_url: Your API base URL (e.g., http://localhost:8000)\n- access_token: JWT token (auto-filled after login)\n- username: Your username\n- password: Your password",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    console.log('User registered successfully');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"email\": \"test@example.com\",\n    \"password\": \"securepassword123\",\n    \"full_name\": \"Test User\",\n    \"role\": \"User\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Register a new user account"
+					},
+					"response": []
+				},
+				{
+					"name": "Login (Form Data)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('access_token', response.access_token);",
+									"    console.log('Login successful, token saved');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login with username/password (OAuth2 form)"
+					},
+					"response": []
+				},
+				{
+					"name": "Login (JSON)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('access_token', response.access_token);",
+									"    console.log('Login successful, token saved');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{username}}\",\n    \"password\": \"{{password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/login-json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login-json"
+							]
+						},
+						"description": "Login with JSON payload"
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('access_token', response.access_token);",
+									"    console.log('Token refreshed successfully');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/refresh",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"refresh"
+							]
+						},
+						"description": "Refresh the current JWT token"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"me"
+							]
+						},
+						"description": "Get information about the currently authenticated user"
+					},
+					"response": []
+				}
+			],
+			"description": "Authentication endpoints for user registration, login, and token management"
+		},
+		{
+			"name": "Agents",
+			"item": [
+				{
+					"name": "Get All Agents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/agents?skip=0&limit=100",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"agents"
+							],
+							"query": [
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						},
+						"description": "Get list of agents (filtered by permissions)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Agent",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Virtual Assistant\",\n    \"description\": \"General purpose virtual assistant\",\n    \"system_prompt\": \"You are a helpful and friendly virtual assistant.\",\n    \"personality\": \"Professional but approachable\",\n    \"model_name\": \"gpt-3.5-turbo\",\n    \"temperature\": 0.7,\n    \"max_tokens\": 1000,\n    \"is_active\": true,\n    \"tool_ids\": []\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/agents",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"agents"
+							]
+						},
+						"description": "Create a new agent"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Agent by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/agents/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"agents",
+								"1"
+							]
+						},
+						"description": "Get a specific agent by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Agent",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Virtual Assistant\",\n    \"description\": \"Updated description\",\n    \"temperature\": 0.8,\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/agents/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"agents",
+								"1"
+							]
+						},
+						"description": "Update an existing agent"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Agent",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/agents/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"agents",
+								"1"
+							]
+						},
+						"description": "Delete an agent"
+					},
+					"response": []
+				},
+				{
+					"name": "Execute Agent",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"input_message\": \"Hello, how can you help me today?\",\n    \"context\": {\n        \"user_location\": \"Spain\",\n        \"language\": \"en\",\n        \"timezone\": \"Europe/Madrid\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/agents/1/execute",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"agents",
+								"1",
+								"execute"
+							]
+						},
+						"description": "Execute an agent with input message and context"
+					},
+					"response": []
+				}
+			],
+			"description": "Agent management endpoints for CRUD operations and execution"
+		},
+		{
+			"name": "Tools",
+			"item": [
+				{
+					"name": "Get All Tools",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/tools?skip=0&limit=100",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tools"
+							],
+							"query": [
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						},
+						"description": "Get list of available tools"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Tool",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Weather API\",\n    \"description\": \"Get current weather information\",\n    \"endpoint_template\": \"https://api.openweathermap.org/data/2.5/weather\",\n    \"method_allowed\": \"GET\",\n    \"requires_auth\": true,\n    \"auth_type\": \"api_key\",\n    \"default_headers\": {\n        \"Content-Type\": \"application/json\"\n    },\n    \"timeout_seconds\": 30,\n    \"rate_limit_per_minute\": 60,\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/tools",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tools"
+							]
+						},
+						"description": "Create a new HTTP tool"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Tool by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/tools/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tools",
+								"1"
+							]
+						},
+						"description": "Get a specific tool by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Tool",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Weather API\",\n    \"description\": \"Updated weather tool with new features\",\n    \"timeout_seconds\": 45,\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/tools/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tools",
+								"1"
+							]
+						},
+						"description": "Update an existing tool"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Tool",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/tools/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tools",
+								"1"
+							]
+						},
+						"description": "Delete a tool"
+					},
+					"response": []
+				}
+			],
+			"description": "HTTP tools management for external API integrations"
+		},
+		{
+			"name": "Prompt Templates",
+			"item": [
+				{
+					"name": "Get All Templates",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/prompts?skip=0&limit=100",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"prompts"
+							],
+							"query": [
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						},
+						"description": "Get list of prompt templates"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Template",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Email Response\",\n    \"template_content\": \"Please respond to the email from {customer_name} about {topic}. Use a {tone} tone and include information about {product}.\",\n    \"description\": \"Template for automated email responses\",\n    \"version\": \"1.0\",\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/prompts",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"prompts"
+							]
+						},
+						"description": "Create a new prompt template"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Template by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/prompts/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"prompts",
+								"1"
+							]
+						},
+						"description": "Get a specific template by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Template",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Email Response\",\n    \"template_content\": \"Please respond to the email from {customer_name} about {topic}. Use a {tone} tone, include information about {product}, and ensure the response is {length}.\",\n    \"description\": \"Updated template with length parameter\",\n    \"version\": \"1.1\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/prompts/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"prompts",
+								"1"
+							]
+						},
+						"description": "Update an existing template"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Template",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/prompts/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"prompts",
+								"1"
+							]
+						},
+						"description": "Delete a template"
+					},
+					"response": []
+				},
+				{
+					"name": "Render Template",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"variables\": {\n        \"customer_name\": \"John Smith\",\n        \"topic\": \"product return\",\n        \"tone\": \"professional\",\n        \"product\": \"Premium Headphones\",\n        \"length\": \"concise\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/prompts/1/render",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"prompts",
+								"1",
+								"render"
+							]
+						},
+						"description": "Render template with variables"
+					},
+					"response": []
+				},
+				{
+					"name": "Validate Template",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/prompts/1/validate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"prompts",
+								"1",
+								"validate"
+							]
+						},
+						"description": "Validate template syntax and variables"
+					},
+					"response": []
+				}
+			],
+			"description": "Prompt template management with variable support"
+		},
+		{
+			"name": "Metrics & Analytics",
+			"item": [
+				{
+					"name": "Get Cost Summary",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/metrics/costs?cost_type=&start_date=&end_date=",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"metrics",
+								"costs"
+							],
+							"query": [
+								{
+									"key": "cost_type",
+									"value": "",
+									"description": "Optional: llm_call, tool_execution, etc."
+								},
+								{
+									"key": "start_date",
+									"value": "",
+									"description": "Optional: ISO format (2024-01-01T00:00:00)"
+								},
+								{
+									"key": "end_date",
+									"value": "",
+									"description": "Optional: ISO format (2024-01-31T23:59:59)"
+								}
+							]
+						},
+						"description": "Get cost summary with optional filters"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Usage Metrics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/metrics/usage?start_date=&end_date=",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"metrics",
+								"usage"
+							],
+							"query": [
+								{
+									"key": "start_date",
+									"value": "",
+									"description": "Optional: ISO format"
+								},
+								{
+									"key": "end_date",
+									"value": "",
+									"description": "Optional: ISO format"
+								}
+							]
+						},
+						"description": "Get usage metrics and statistics"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Execution History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/metrics/executions?skip=0&limit=50&status=&agent_id=",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"metrics",
+								"executions"
+							],
+							"query": [
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "50"
+								},
+								{
+									"key": "status",
+									"value": "",
+									"description": "Optional: completed, failed, pending"
+								},
+								{
+									"key": "agent_id",
+									"value": "",
+									"description": "Optional: filter by agent ID"
+								}
+							]
+						},
+						"description": "Get execution history with filters"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Detailed Costs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/metrics/costs/detailed?skip=0&limit=50&cost_type=",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"metrics",
+								"costs",
+								"detailed"
+							],
+							"query": [
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "50"
+								},
+								{
+									"key": "cost_type",
+									"value": "",
+									"description": "Optional: cost type filter"
+								}
+							]
+						},
+						"description": "Get detailed cost breakdown"
+					},
+					"response": []
+				}
+			],
+			"description": "Metrics, analytics, and cost tracking endpoints"
+		},
+		{
+			"name": "System Configuration (Admin)",
+			"item": [
+				{
+					"name": "Get All Configs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/config",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"config"
+							]
+						},
+						"description": "Get all system configurations (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Specific Config",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/config/openai_api_key",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"config",
+								"openai_api_key"
+							]
+						},
+						"description": "Get a specific configuration value (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Config",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"config_key\": \"new_feature_enabled\",\n    \"config_value\": \"false\",\n    \"description\": \"Enable/disable new feature\",\n    \"is_encrypted\": false\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/config",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"config"
+							]
+						},
+						"description": "Create new configuration (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Config",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"config_value\": \"true\",\n    \"description\": \"Updated description\",\n    \"is_encrypted\": false\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/config/new_feature_enabled",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"config",
+								"new_feature_enabled"
+							]
+						},
+						"description": "Update configuration (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Config",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/config/new_feature_enabled",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"config",
+								"new_feature_enabled"
+							]
+						},
+						"description": "Delete configuration (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Force Reload Config",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/config/reload",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"config",
+								"reload"
+							]
+						},
+						"description": "Force reload configuration cache (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Hot Reload Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/config/status/hot-reload",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"config",
+								"status",
+								"hot-reload"
+							]
+						},
+						"description": "Get hot reload status (Admin only)"
+					},
+					"response": []
+				}
+			],
+			"description": "System configuration management (Admin only)"
+		},
+		{
+			"name": "Health & Utility",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "API health check endpoint"
+					},
+					"response": []
+				},
+				{
+					"name": "API Documentation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/docs",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"docs"
+							]
+						},
+						"description": "Interactive API documentation (Swagger UI)"
+					},
+					"response": []
+				},
+				{
+					"name": "OpenAPI Schema",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/openapi.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"openapi.json"
+							]
+						},
+						"description": "OpenAPI schema in JSON format"
+					},
+					"response": []
+				}
+			],
+			"description": "Health checks and utility endpoints"
+		}
+	]
+}
