@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  # SQL Server database
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: agent-system-db
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: DevPassword123!
+      MSSQL_PID: Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - agent-network
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P DevPassword123! -Q 'SELECT 1'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Agent System API
+  agent-api:
+    build: .
+    container_name: agent-system-api
+    environment:
+      DATABASE_URL: mssql+pyodbc://usrmon:MonAplic01@@sqlserver/AgentSystem?driver=ODBC+Driver+17+for+SQL+Server
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      SECRET_KEY: your-super-secret-jwt-key-change-in-production
+      ENCRYPTION_KEY: your-encryption-key-32-bytes-change-this
+    ports:
+      - "8000:8000"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - agent-network
+    volumes:
+      - ./app:/app/app:ro  # For development hot reload
+    restart: unless-stopped
+
+  # Database initialization (runs once)
+  db-init:
+    image: mcr.microsoft.com/mssql-tools
+    container_name: agent-system-db-init
+    environment:
+      SA_PASSWORD: DevPassword123!
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - agent-network
+    volumes:
+      - ./database:/scripts
+    command: >
+      bash -c "
+        /opt/mssql-tools/bin/sqlcmd -S sqlserver -U sa -P DevPassword123! -i /scripts/init.sql
+        echo 'Database initialization completed'
+      "
+
+volumes:
+  sqlserver_data:
+
+networks:
+  agent-network:
+    driver: bridge

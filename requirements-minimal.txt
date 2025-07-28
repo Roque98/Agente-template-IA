@@ -1,0 +1,17 @@
+fastapi
+langchain
+langchain-openai
+sqlalchemy
+pyodbc
+python-jose[cryptography]
+passlib[bcrypt]
+cryptography
+httpx
+pydantic
+pydantic-settings
+python-multipart
+uvicorn[standard]
+slowapi
+python-dotenv
+pytest
+pytest-asyncio
